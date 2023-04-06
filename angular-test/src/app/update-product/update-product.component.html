@@ -1,0 +1,15 @@
+<div class="col-md-8 offset-md-3">
+  <h3>Update Product</h3>
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Name</label>
+      <input type="string" class="form-control" id="name" [(ngModel)]="product.name" name="name">
+    </div>
+    <div class="mb-3">
+      <label>Price</label>
+      <input type="number" class="form-control" id = "price" [(ngModel)] = "product.price" name="price">
+    </div>
+    <button class="btn btn-success" type="submit"> Update </button>
+    <button class="btn btn-danger" (click)="goToProductList()"> Cancel </button>
+  </form>
+</div>

@@ -1,0 +1,27 @@
+<h3>View Order Info</h3>
+<div class="container">
+  <div>
+    <label> <b> Client: </b> </label> {{order.client}}
+  </div>
+  <div>
+    <label> <b> Date: </b> </label> {{order.date}}
+  </div>
+  <div>
+    <label> <b> Address: </b> </label> {{order.address}}
+  </div>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Product</th>
+      <th>Count</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of ordersLine">
+      <td>{{item.goods_id.name}}</td>
+      <td>{{item.count}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-danger" (click)="goToOrderList()"> Cancel</button>
+</div>

@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <button class="btn-light" routerLink="create-order" routerLinkActive="active"><b>Create Order</b></button>
+    </li>
+  </ul>
+</nav>
+<br>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Client</th>
+    <th>Date</th>
+    <th>Address</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let order of orders">
+    <td> {{order.client}}</td>
+    <td> {{order.date}}</td>
+    <td> {{order.address}}</td>
+    <td>
+      <button (click)="updateOrder(order.id)" type="button" class="btn btn-primary">Update</button>
+      <button (click)="deleteOrder(order.id)" type="button" class="btn btn-danger">Delete</button>
+      <button (click)="orderInfo(order.id)" type="button" class="btn btn-info">Info</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+

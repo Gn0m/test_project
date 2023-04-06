@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "@ng-select/ng-select/themes/default.theme.css";
+@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+.blockquote-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #0d6efd;
+  text-align: center;
+  color: white;
+}
+
+.btn {
+  margin: 5px;
+  width: 80px;
+}
+
+.btn-light {
+  margin-left: 10px;
+}
+

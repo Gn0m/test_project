@@ -1,0 +1,13 @@
+<div class="container">
+  <h1 class="text-center">{{title}}</h1>
+  <mat-tab-group>
+    <mat-tab label="Orders">
+      <router-outlet name="left"></router-outlet>
+    </mat-tab>
+    <mat-tab label="Goods">
+      <router-outlet name="right"></router-outlet>
+    </mat-tab>
+  </mat-tab-group>
+  <br>
+</div>
+

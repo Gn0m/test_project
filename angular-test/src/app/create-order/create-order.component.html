@@ -1,0 +1,27 @@
+<div class="col-md-8 offset-md-3">
+  <h3>Create Order</h3>
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label>Client</label>
+      <input type="number" class="form-control" id="client" [(ngModel)]="order.client" name="client">
+    </div>
+    <div class="mb-3">
+      <label>Date</label>
+      <input type="text" class="form-control" id="date" [(ngModel)]="order.date" name="date">
+    </div>
+    <div class="mb-3">
+      <label>Address</label>
+      <input type="text" class="form-control" id="address" [(ngModel)]="order.address" name="stringAddress">
+    </div>
+    <br>
+    <div style="height: 50%;width: 60%">
+      <ng-select [items]="products" bindLabel="name" bindValue="id"
+                 [(ngModel)]="productValue" name="item"/>
+      <label>Count</label>
+      <input type="number" class="form-control" id="count" [(ngModel)]="orderLine.count" name="address">
+      <br>
+    </div>
+    <button class="btn btn-success" type="submit"> Create</button>
+    <button class="btn btn-danger" (click)="goToOrderList()"> Cancel</button>
+  </form>
+</div>
