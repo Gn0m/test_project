@@ -1,12 +1,9 @@
 export class Product {
-  id: number;
-  name: string;
-  price: number;
+  id: number = Number.NaN;
+  name: string = "";
+  price: number = Number.NaN;
 
 
   constructor() {
-    this.id = Number.NaN
-    this.price = Number.NaN
-    this.name = " "
   }
 }

@@ -2,7 +2,7 @@ package com.example.test_project.controllers;
 
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Product;
-import com.example.test_project.controllers.service.ProductService;
+import com.example.test_project.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +60,7 @@ class ProductControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(product));
 
-        Mockito.when(service.save(product))
+        Mockito.when(service.saveProduct(product))
                 .thenReturn(product);
 
         this.mockMvc.perform(content)
@@ -86,7 +86,7 @@ class ProductControllerTest {
         clone.setPrice(product.getPrice());
         clone.setName(product.getName());
 
-        Mockito.when(service.update(product, 1))
+        Mockito.when(service.updateProduct(product, 1))
                 .thenReturn(clone);
 
         this.mockMvc.perform(content)
@@ -104,7 +104,7 @@ class ProductControllerTest {
         MockHttpServletRequestBuilder content = MockMvcRequestBuilders.delete("/goods/1");
 
         Map<String, Boolean> status = new HashMap<>();
-        status.put("deleted", Boolean.TRUE);
+        status.put("Deleted", Boolean.TRUE);
 
         Mockito.when(service.deleteById(1))
                 .thenReturn(status);
@@ -112,8 +112,8 @@ class ProductControllerTest {
         this.mockMvc.perform(content)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.deleted").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.deleted", CoreMatchers.is(Boolean.TRUE)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.Deleted").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.Deleted", CoreMatchers.is(Boolean.TRUE)))
                 .andDo(MockMvcResultHandlers.print()
                 );
 
@@ -154,7 +154,7 @@ class ProductControllerTest {
                 .thenReturn(product);
 
         Mockito.when(service.getId(2))
-                .thenThrow(new ResourceNotFoundException(notFoundId(2)));
+                .thenThrow(new ResourceNotFoundException(notFoundId()));
 
         this.mockMvc.perform(get("/goods/1"))
                 .andExpect(status().isOk())
@@ -172,8 +172,8 @@ class ProductControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    private String notFoundId(int id) {
-        return "Product with Id: " + id + " not found";
+    private String notFoundId() {
+        return "Product with Id: " + 2 + " not found";
     }
 
 }

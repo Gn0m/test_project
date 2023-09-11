@@ -1,12 +1,24 @@
 import {Product} from "./product";
 
 export class OrderLine {
-  goods_id: Product;
-  count: Number;
+  goods_id: Product = new Product();
+  count: number = Number.NaN;
 
   constructor() {
-    this.goods_id = new Product();
-    this.count = Number.NaN
   }
+
+  public sum() {
+    return this.goods_id.price * this.count
+  }
+
+  public clone(product: Product, count: number) {
+    this.count = count;
+    this.goods_id = product;
+  }
+
+  public fold(count: number) {
+    this.count += count;
+  }
+
 
 }

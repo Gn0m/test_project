@@ -20,14 +20,11 @@ export class CreateProductComponent {
   }
 
   saveOrder() {
-    this.productService.createProduct(this.product).subscribe(data => {
-      console.log(data)
-    }, error => console.log(error));
+    this.productService.createProduct(this.product).subscribe(error => console.log(error));
     this.goToProductList();
   }
 
   goToProductList() {
-    //this.router.navigate(['list']);
     this.router.navigate([{outlets: {right: ['product-list']}}]);
   }
 }

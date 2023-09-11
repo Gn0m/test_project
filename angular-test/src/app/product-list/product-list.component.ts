@@ -19,25 +19,21 @@ export class ProductListComponent {
 
   getProducts() {
     this.productService.getProductList().subscribe(data => {
-      console.log(data)
       this.products = data;
     })
   }
 
   updateProduct(id: number) {
-    //this.router.navigate(['update-order', id]);
     this.router.navigate([{outlets: {right: ['update-product', id]}}]);
   }
 
   deleteProduct(id: number) {
-    this.productService.deleteProduct(id).subscribe(data => {
-      console.log(data)
+    this.productService.deleteProduct(id).subscribe(() => {
       this.getProducts();
     });
   }
 
   productInfo(id: number) {
-    //this.router.navigate(['order-info', id]);
     this.router.navigate([{outlets: {right: ['product-info', id]}}]);
   }
 

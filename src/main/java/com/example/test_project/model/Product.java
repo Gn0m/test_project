@@ -11,6 +11,13 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Класс сущности товара
+ *
+ * @author L.Gushin
+ * @version 2.0
+ * @since 07/09/2023
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,16 +26,43 @@ import java.util.Set;
 @Table(name = "goods", schema = "public")
 public class Product {
 
+    /**
+     * номер товара
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    /**
+     * название товара
+     */
     private String name;
+    /**
+     * цена товара
+     */
     private double price;
-
+    /**
+     * связь с позицией
+     */
     @JsonIgnore
-    @OneToMany(mappedBy = "goods_id")
+    @OneToMany(mappedBy = "goods_id", cascade = CascadeType.REMOVE)
     private Set<OrderLine> productsLine = new HashSet<>();
 
+    /**
+     * Переносит параметры из переданного товара в текущий
+     *
+     * @param product клонируемый объект
+     */
+    public void cloneParam(Product product) {
+        this.name = product.getName();
+        this.price = product.getPrice();
+    }
+
+    /**
+     * equals
+     *
+     * @param o объект для сравнения
+     * @return boolean
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -37,31 +71,27 @@ public class Product {
         return id == product.id && Double.compare(product.price, price) == 0 && Objects.equals(name, product.name);
     }
 
+    /**
+     * hashCode
+     *
+     * @return int
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price);
     }
 
+    /**
+     * представление товара в виде строки
+     *
+     * @return String
+     */
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+        return "Id = " + id +
+                ", name='" + name +
+                ", price=" + price;
     }
 
-    public void removeProductsLinet(OrderLine line) {
-        if (!productsLine.contains(line))
-            return;
-        productsLine.remove(line);
-        line.setGoods_id(null);
-    }
 
-    public void addProductsLine(OrderLine line) {
-        if (productsLine.contains(line))
-            return;
-        productsLine.add(line);
-        line.setGoods_id(this);
-    }
 }

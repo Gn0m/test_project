@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {ProductService} from "../service/product.service";
 import {Product} from "../model/product";
 import {OrderLine} from "../model/order-line";
+import {OrderDAO} from "../DAO/order-dao";
 
 @Component({
   selector: 'app-create-order',
@@ -16,32 +17,29 @@ export class CreateOrderComponent {
   order: Order = new Order();
   products: Product[] = [];
   orderLine: OrderLine = new OrderLine();
-  productValue: number;
 
   constructor(private orderService: OrderService,
               private router: Router, private productService: ProductService) {
     this.getProducts();
-    this.productValue = Number.NaN;
   }
 
   onSubmit() {
-    this.saveOrder();
-  }
-
-  saveOrder() {
-    console.log(this.order);
-    this.productService.getProductById(this.productValue).subscribe(data => {
-      this.orderLine.goods_id = data;
-      this.order.ordersLine.push(this.orderLine);
-      this.orderService.createOrder(this.order).subscribe(data => {
-        console.log(data);
-      }, error => console.log(error));
-    });
+    let order: OrderDAO = new OrderDAO();
+    order.convert(this.order);
+    this.orderService.createOrder(order).subscribe(error => console.log(error));
     this.goToOrderList();
   }
 
+  saveOrder() {
+    console.log(this.orderLine.goods_id.id + " goods_id saveOrder");
+    this.productService.getProductById(this.orderLine.goods_id.id).subscribe(data => {
+      let line: OrderLine = new OrderLine();
+      line.clone(data, this.orderLine.count);
+      this.order.addOrderLine(line);
+    });
+  }
+
   goToOrderList() {
-    //this.router.navigate(['list']);
     this.router.navigate([{outlets: {left: ['list']}}]);
   }
 

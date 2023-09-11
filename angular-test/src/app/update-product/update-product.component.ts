@@ -19,19 +19,17 @@ export class UpdateProductComponent {
     this.id = this.activityRoute.snapshot.params['id'];
     productService.getProductById(this.id).subscribe(data => {
       this.product = data;
-    }, error => console.log(error));
+    });
   }
 
   onSubmit() {
     this.productService.updateProduct(this.product, this.id).subscribe(data => {
-        console.log(data)
-        this.goToProductList();
-      }
-      , error => console.log(error));
+      console.log(data)
+      this.goToProductList();
+    });
   }
 
   goToProductList() {
-    //this.router.navigate(['/list']);
     this.router.navigate([{outlets: {right: ['product-list']}}]);
   }
 }

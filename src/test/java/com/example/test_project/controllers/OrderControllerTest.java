@@ -2,7 +2,7 @@ package com.example.test_project.controllers;
 
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Order;
-import com.example.test_project.controllers.service.OrderService;
+import com.example.test_project.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +62,7 @@ class OrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(order));
 
-        Mockito.when(service.save(order))
+        Mockito.when(service.saveOrder(order))
                 .thenReturn(order);
 
         this.mockMvc.perform(content)
@@ -89,7 +89,7 @@ class OrderControllerTest {
         clone.setDate(order.getDate());
         clone.setClient(order.getClient());
 
-        Mockito.when(service.update(order, 1))
+        Mockito.when(service.updateById(order, 1))
                 .thenReturn(clone);
 
         this.mockMvc.perform(content)
@@ -107,7 +107,7 @@ class OrderControllerTest {
         MockHttpServletRequestBuilder content = MockMvcRequestBuilders.delete("/orders/1");
 
         Map<String, Boolean> status = new HashMap<>();
-        status.put("deleted", Boolean.TRUE);
+        status.put("Deleted", Boolean.TRUE);
 
         Mockito.when(service.deleteById(1))
                 .thenReturn(status);
@@ -115,8 +115,8 @@ class OrderControllerTest {
         this.mockMvc.perform(content)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.deleted").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.deleted", CoreMatchers.is(Boolean.TRUE)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.Deleted").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.Deleted", CoreMatchers.is(Boolean.TRUE)))
                 .andDo(MockMvcResultHandlers.print()
                 );
 
@@ -135,7 +135,7 @@ class OrderControllerTest {
         list.add(order);
         list.add(clone);
 
-        Mockito.when(service.getAll())
+        Mockito.when(service.getAllOrders())
                 .thenReturn(list);
 
         this.mockMvc.perform(get("/orders/all"))
@@ -153,11 +153,11 @@ class OrderControllerTest {
     @Test
     void getOne() throws Exception {
 
-        Mockito.when(service.getId(1))
+        Mockito.when(service.getById(1))
                 .thenReturn(order);
 
-        Mockito.when(service.getId(2))
-                .thenThrow(new ResourceNotFoundException(notFoundId(2)));
+        Mockito.when(service.getById(2))
+                .thenThrow(new ResourceNotFoundException(notFoundId()));
 
         this.mockMvc.perform(get("/orders/1"))
                 .andExpect(status().isOk())
@@ -175,8 +175,8 @@ class OrderControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    private String notFoundId(int id) {
-        return "Order with Id: " + id + " not found";
+    private String notFoundId() {
+        return "Order with Id: " + 2 + " not found";
     }
 
 }

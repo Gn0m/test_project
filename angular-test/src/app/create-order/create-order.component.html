@@ -1,27 +1,35 @@
-<div class="col-md-8 offset-md-3">
-  <h3>Create Order</h3>
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label>Client</label>
-      <input type="number" class="form-control" id="client" [(ngModel)]="order.client" name="client">
-    </div>
-    <div class="mb-3">
-      <label>Date</label>
-      <input type="text" class="form-control" id="date" [(ngModel)]="order.date" name="date">
-    </div>
-    <div class="mb-3">
-      <label>Address</label>
-      <input type="text" class="form-control" id="address" [(ngModel)]="order.address" name="stringAddress">
-    </div>
-    <br>
-    <div style="height: 50%;width: 60%">
-      <ng-select [items]="products" bindLabel="name" bindValue="id"
-                 [(ngModel)]="productValue" name="item"/>
-      <label>Count</label>
-      <input type="number" class="form-control" id="count" [(ngModel)]="orderLine.count" name="address">
-      <br>
-    </div>
-    <button class="btn btn-success" type="submit"> Create</button>
-    <button class="btn btn-danger" (click)="goToOrderList()"> Cancel</button>
-  </form>
+<div>
+  <div class="form-group">
+    <label>Номер клиента</label>
+    <input type="number" class="form-control" id="client" [(ngModel)]="order.client" name="client">
+  </div>
+  <div class="form-group">
+    <label>Дата</label>
+    <input type="text" class="form-control" id="date" [(ngModel)]="order.date" name="date">
+  </div>
+  <div class="form-group">
+    <label>Адресс</label>
+    <input type="text" class="form-control" id="address" [(ngModel)]="order.address" name="stringAddress">
+  </div>
+  <div class="form-group">
+    <label>Товар</label>
+    <select class="form-control" name="product" [(ngModel)]="orderLine.goods_id.id">
+      <option *ngFor="let product of products" [value]="product.id">
+        {{product.name}}
+      </option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Количество</label>
+    <input type="number" class="form-control" id="count" [(ngModel)]="orderLine.count" name="count"></div>
+  <div class="form-group">
+    <button class="btn btn-info" (click)="saveOrder()">Добавить</button>
+    <button class="btn btn-danger" (click)="goToOrderList()">Отменить</button>
+    <button class="btn btn-success" (click)="onSubmit()">Сохранить</button>
+  </div>
+</div>
+<div><h3>Добавленные элементы</h3>
+  <ul>
+    <li *ngFor="let line of order.ordersLine">{{line.goods_id.name}} ( {{line.count}} ) - {{line.sum()}}</li>
+  </ul>
 </div>

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
   <ul class="navbar-nav">
     <li class="nav-item">
-      <button class="btn-light" routerLink="create-product" routerLinkActive="active"><b>Create Product</b></button>
+      <button class="btn-light" routerLink="create-product" routerLinkActive="active"><b>Создать товар</b></button>
     </li>
   </ul>
 </nav>
@@ -9,9 +9,9 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th>Name</th>
-    <th>Price</th>
-    <th>Actions</th>
+    <th>Название</th>
+    <th>Цена</th>
+    <th>Действие</th>
   </tr>
   </thead>
   <tbody>
@@ -19,17 +19,13 @@
     <td> {{product.name}}</td>
     <td> {{product.price}}</td>
     <td>
-      <button (click)="updateProduct(product.id)" type="button" class="btn btn-primary">Update</button>
-      <button (click)="deleteProduct(product.id)" type="button" class="btn btn-danger">Delete</button>
-      <button (click)="productInfo(product.id)" type="button" class="btn btn-info">Info</button>
+      <button (click)="updateProduct(product.id)" type="button" class="btn btn-primary">Изменить</button>
+      <button (click)="deleteProduct(product.id)" type="button" class="btn btn-danger">Удалить</button>
+      <button (click)="productInfo(product.id)" type="button" class="btn btn-info">Информация</button>
     </td>
   </tr>
   </tbody>
 </table>
-<!--<footer class="blockquote-footer">-->
-<!--  <div class="container">-->
-<!--    <span>All Rights Reserved  2023 @JavaTest x21</span>-->
-<!--  </div>-->
-<!--</footer>-->
+
 
 

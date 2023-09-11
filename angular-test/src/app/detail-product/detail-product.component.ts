@@ -22,7 +22,6 @@ export class DetailProductComponent {
   }
 
   goToProductList() {
-    //this.router.navigate(['list']);
     this.router.navigate([{outlets: {right: ['product-list']}}]);
   }
 }

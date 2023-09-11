@@ -1,28 +1,35 @@
-<div class="col-md-8 offset-md-3">
-  <h3>Update Order</h3>
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label>Client</label>
-      <input type="number" class="form-control" id="client" [(ngModel)]="order.client" name="client">
-    </div>
-    <div class="mb-3">
-      <label>Date</label>
-      <input type="text" class="form-control" id="date" [(ngModel)]="order.date" name="date">
-    </div>
-    <div class="mb-3">
-      <label>Address</label>
-      <input type="text" class="form-control" id="address" [(ngModel)]="order.address" name="address">
-    </div>
+<div>
+  <div class="form-group">
+    <label>Номер клиента</label>
+    <input type="number" class="form-control" id="client" [(ngModel)]="orderDAO.client" name="client">
+  </div>
+  <div class="form-group">
+    <label>Дата</label>
+    <input type="text" class="form-control" id="date" [(ngModel)]="orderDAO.date" name="date">
+  </div>
+  <div class="form-group">
+    <label>Адресс</label>
+    <input type="text" class="form-control" id="address" [(ngModel)]="orderDAO.address" name="stringAddress">
     <br>
-    <div style="height: 50%;width: 60%">
-      <ng-select [items]="products" bindLabel="name" bindValue="id"
-                 [(ngModel)]="productValue" name="item"/>
-      <label>Count</label>
-      <input type="number" class="form-control" id="count" [(ngModel)]="this.order.ordersLine[0].count" name="count">
-      <br>
-    </div>
-    <button class="btn btn-success" type="submit"> Update</button>
-    <button class="btn btn-danger" (click)="goToOrderList()"> Cancel</button>
-  </form>
+  </div>
+
+  <div class="form-group" *ngFor="let orderLine of orderDAO.ordersLine; let i = index">
+    <label>Товар</label>
+    <select class="form-control" name="product" [(ngModel)]="orderLine.goods_id.id">
+      <option *ngFor="let product of products" [value]="product.id">
+        {{product.name}}
+      </option>
+    </select>
+    <label>Количество</label>
+    <input type="number" class="form-control" id="count" [(ngModel)]="orderLine.count" name="count">
+    <button class="btn btn-danger" (click)="deleteLine(i)">Удалить</button>
+    <br>
+  </div>
+  <div class="form-group">
+    <button class="btn btn-info" (click)="addOrderLine()">Добавить</button>
+    <button class="btn btn-danger" (click)="goToOrderList()">Отменить</button>
+    <button class="btn btn-success" (click)="onSubmit()">Сохранить</button>
+  </div>
 </div>
+
 

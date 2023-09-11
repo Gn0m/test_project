@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
   <ul class="navbar-nav">
     <li class="nav-item">
-      <button class="btn-light" routerLink="create-order" routerLinkActive="active"><b>Create Order</b></button>
+      <button class="btn-light" routerLink="create-order" routerLinkActive="active"><b>Создать заказ</b></button>
     </li>
   </ul>
 </nav>
@@ -9,10 +9,10 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th>Client</th>
-    <th>Date</th>
-    <th>Address</th>
-    <th>Actions</th>
+    <th>Клиент</th>
+    <th>Дата</th>
+    <th>Адресс</th>
+    <th>Действия</th>
   </tr>
   </thead>
   <tbody>
@@ -21,11 +21,12 @@
     <td> {{order.date}}</td>
     <td> {{order.address}}</td>
     <td>
-      <button (click)="updateOrder(order.id)" type="button" class="btn btn-primary">Update</button>
-      <button (click)="deleteOrder(order.id)" type="button" class="btn btn-danger">Delete</button>
-      <button (click)="orderInfo(order.id)" type="button" class="btn btn-info">Info</button>
+      <button (click)="updateOrder(order.id)" type="button" class="btn btn-primary">Изменить</button>
+      <button (click)="deleteOrder(order.id)" type="button" class="btn btn-danger">Удалить</button>
+      <button (click)="orderInfo(order.id)" type="button" class="btn btn-info">Информация</button>
     </td>
   </tr>
   </tbody>
 </table>
+
 

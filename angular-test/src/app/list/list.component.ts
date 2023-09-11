@@ -25,7 +25,6 @@ export class ListComponent {
   }
 
   updateOrder(id: number) {
-    //this.router.navigate(['update-order', id]);
     this.router.navigate([{outlets: {left: ['update-order', id]}}]);
   }
 
@@ -37,7 +36,6 @@ export class ListComponent {
   }
 
   orderInfo(id: number) {
-    //this.router.navigate(['order-info', id]);
     this.router.navigate([{outlets: {left: ['order-info', id]}}]);
   }
 
