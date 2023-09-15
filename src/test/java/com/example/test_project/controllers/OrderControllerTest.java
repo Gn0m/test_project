@@ -1,5 +1,6 @@
 package com.example.test_project.controllers;
 
+import com.example.test_project.dto.OrderDTO;
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Order;
 import com.example.test_project.service.OrderService;
@@ -62,7 +63,13 @@ class OrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(order));
 
-        Mockito.when(service.saveOrder(order))
+        OrderDTO dto = new OrderDTO();
+        dto.setClient(2);
+        dto.setDate(order.getDate());
+        dto.setAddress("Тестовый адресс");
+
+
+        Mockito.when(service.saveOrder(dto))
                 .thenReturn(order);
 
         this.mockMvc.perform(content)

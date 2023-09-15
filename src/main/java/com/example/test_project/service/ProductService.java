@@ -1,6 +1,7 @@
 package com.example.test_project.service;
 
 import com.example.test_project.dao.ProductRepo;
+import com.example.test_project.dto.ProductDTO;
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Product;
 import lombok.AllArgsConstructor;
@@ -43,10 +44,13 @@ public class ProductService {
     /**
      * Сохраняет товар
      *
-     * @param product товар для сохранения
+     * @param dto товар для сохранения
      * @return <code>Product</code>
      */
-    public Product saveProduct(Product product) {
+    public Product saveProduct(ProductDTO dto) {
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
         return repo.save(product);
     }
 

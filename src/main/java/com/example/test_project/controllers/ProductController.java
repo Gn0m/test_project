@@ -1,7 +1,9 @@
 package com.example.test_project.controllers;
 
+import com.example.test_project.dto.ProductDTO;
 import com.example.test_project.model.Product;
 import com.example.test_project.service.ProductService;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ public class ProductController {
     /**
      * Сервис для  выполнения операций добавления, удаления, изменения, извлечения товара из бд
      */
-    private ProductService service;
+    private final ProductService service;
 
     /**
      * метод для получения товара из конечной точки <code>/goods</code> в формате json и сохранения его в бд
@@ -32,7 +34,8 @@ public class ProductController {
      * @return <code>Product</code>
      */
     @PostMapping(value = "", consumes = "application/json", produces = "application/json")
-    public Product add(@RequestBody Product product) {
+    @ApiOperation(value = "Товар", notes = "Сохраняет товар", response = Product.class)
+    public Product addProduct(@RequestBody ProductDTO product) {
         return service.saveProduct(product);
     }
 
@@ -44,7 +47,7 @@ public class ProductController {
      * @return <code>Product</code>
      */
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    public Product update(@RequestBody Product product, @PathVariable("id") int id) {
+    public Product updateProduct(@RequestBody Product product, @PathVariable("id") int id) {
         return service.updateProduct(product, id);
     }
 
@@ -56,7 +59,7 @@ public class ProductController {
      * @return <code>boolean</code>
      */
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> deleteById(@PathVariable("id") int id) {
+    public Map<String, Boolean> deleteProductById(@PathVariable("id") int id) {
         return service.deleteById(id);
     }
 
@@ -77,7 +80,7 @@ public class ProductController {
      * @return <code>Product</code>
      */
     @GetMapping("/{id}")
-    public Product getOne(@PathVariable("id") int id) {
+    public Product getProduct(@PathVariable("id") int id) {
         return service.getId(id);
     }
 }

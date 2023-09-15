@@ -1,10 +1,13 @@
 package com.example.test_project.service;
 
 import com.example.test_project.dao.OrderRepo;
+import com.example.test_project.dto.OrderDTO;
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Order;
+import com.example.test_project.model.OrderLine;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -56,11 +59,25 @@ public class OrderService {
      * ( сделано так тупо потому что не знаю как в ангулар избавится от цикличности в JSON по принцыпу
      * <code>@JsonIgnore</code> в java )
      *
-     * @param order заказ который необходимо сохранить
+     * @param dto заказ который необходимо сохранить
      * @return <code>Order</code>
      */
-    public Order saveOrder(Order order) {
-        order.getOrdersLine().forEach(item -> item.setOrder_id(order));
+    public Order saveOrder(OrderDTO dto) {
+        Order order = new Order();
+        order.setClient(dto.getClient());
+        order.setDate(dto.getDate());
+        order.setAddress(dto.getAddress());
+
+        val ordersLine = dto.getOrdersLine();
+
+        ordersLine.forEach(item -> {
+            OrderLine line = new OrderLine();
+            line.setCount(item.getCount());
+            line.setGoods_id(item.getGoods_id());
+            line.setOrder_id(order);
+            order.getOrdersLine().add(line);
+        });
+
         return repo.save(order);
     }
 

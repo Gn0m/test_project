@@ -1,5 +1,6 @@
 package com.example.test_project.controllers;
 
+import com.example.test_project.dto.ProductDTO;
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Product;
 import com.example.test_project.service.ProductService;
@@ -60,7 +61,11 @@ class ProductControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(product));
 
-        Mockito.when(service.saveProduct(product))
+        ProductDTO dto = new ProductDTO();
+        dto.setName("Тестовый молоток");
+        dto.setPrice(2.1);
+
+        Mockito.when(service.saveProduct(dto))
                 .thenReturn(product);
 
         this.mockMvc.perform(content)

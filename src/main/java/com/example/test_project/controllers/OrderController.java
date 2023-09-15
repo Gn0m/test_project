@@ -1,5 +1,6 @@
 package com.example.test_project.controllers;
 
+import com.example.test_project.dto.OrderDTO;
 import com.example.test_project.model.Order;
 import com.example.test_project.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class OrderController {
     /**
      * Сервис для  выполнения операций добавления, удаления, изменения, извлечения заказа из бд
      */
-    private OrderService service;
+    private final OrderService service;
 
     /**
      * метод для получения заказа из конечной точки <code>/orders</code> в формате json и сохранения его в бд
@@ -33,7 +34,7 @@ public class OrderController {
      * @return Order
      */
     @PostMapping(value = "", consumes = "application/json", produces = "application/json")
-    public Order add(@RequestBody Order order) {
+    public Order addOrder(@RequestBody OrderDTO order) {
         return service.saveOrder(order);
     }
 
@@ -45,7 +46,7 @@ public class OrderController {
      * @return <code>Order</code>
      */
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    public Order update(@RequestBody Order order, @PathVariable("id") int id) {
+    public Order updateOrder(@RequestBody Order order, @PathVariable("id") int id) {
         return service.updateById(order, id);
     }
 
@@ -57,7 +58,7 @@ public class OrderController {
      * @return {@code Map<String, Boolean>}
      */
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> delete(@PathVariable("id") int id) {
+    public Map<String, Boolean> deleteOrderById(@PathVariable("id") int id) {
         return service.deleteById(id);
     }
 
@@ -67,7 +68,7 @@ public class OrderController {
      * @return {@code List<Order>}
      */
     @GetMapping("/all")
-    public List<Order> getAll() {
+    public List<Order> getAllOrders() {
         return service.getAllOrders();
     }
 
@@ -78,7 +79,7 @@ public class OrderController {
      * @return <code>Order</code>
      */
     @GetMapping("/{id}")
-    public Order getOne(@PathVariable("id") int id) {
+    public Order getOrder(@PathVariable("id") int id) {
         return service.getById(id);
     }
 }
