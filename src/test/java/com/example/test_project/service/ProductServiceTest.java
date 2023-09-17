@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -32,18 +31,17 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         product = new Product();
-        product.setId(5);
+        product.setId(1);
         product.setPrice(20.1);
-        product.setName("Тестовый молоток");
+        product.setName("Молоток слесарный 1000г кв. боек деревянная ручка SPARTA");
 
     }
 
     @Test
     void getAll() {
         Product clone = new Product();
+        clone.cloneParam(product);
         clone.setId(2);
-        clone.setPrice(product.getPrice());
-        clone.setName("Тестовый молоток 2");
 
 
         List<Product> list = new ArrayList<>();
@@ -75,22 +73,21 @@ class ProductServiceTest {
         double price = save.getPrice();
         String name = save.getName();
 
-        assertEquals(5, id);
+        assertEquals(1, id);
         assertEquals(20.1, price);
-        assertEquals("Тестовый молоток", name);
+        assertEquals("Молоток слесарный 1000г кв. боек деревянная ручка SPARTA", name);
 
         Mockito.verify(repo, Mockito.times(1)).save(product);
     }
 
     @Test
     void update() {
-        Product clone = new Product();
-        clone.setId(5);
-        clone.setName("Тестовый молоток 2");
-        clone.setPrice(55.1);
+        product.setName("Молоток слесарный 1000г кв. боек стальная ручка SPARTA");
+        product.setPrice(30.1);
 
-        product.setName(clone.getName());
-        product.setPrice(clone.getPrice());
+        Product clone = new Product();
+        clone.cloneParam(product);
+        clone.setId(1);
 
         Mockito.when(repo.save(clone))
                 .thenReturn(product);
@@ -101,9 +98,9 @@ class ProductServiceTest {
         double price = save.getPrice();
         String name = save.getName();
 
-        assertEquals(5, id);
-        assertEquals(55.1, price);
-        assertEquals("Тестовый молоток 2", name);
+        assertEquals(1, id);
+        assertEquals(30.1, price);
+        assertEquals("Молоток слесарный 1000г кв. боек стальная ручка SPARTA", name);
 
         Mockito.verify(repo, Mockito.times(1)).save(product);
     }
@@ -113,9 +110,7 @@ class ProductServiceTest {
         repo.save(product);
         repo.deleteById(1);
 
-        assertEquals(0,repo.count());
-        assertNotEquals(1,repo.count());
-
+        Mockito.verify(repo, Mockito.times(1)).save(product);
         Mockito.verify(repo, Mockito.times(1)).deleteById(1);
     }
 
@@ -123,18 +118,18 @@ class ProductServiceTest {
     void getId() {
         Optional<Product> optional = Optional.of(product);
 
-        Mockito.when(repo.findById(5))
+        Mockito.when(repo.findById(1))
                 .thenReturn(optional);
 
-        Product orderDB = repo.findById(5).orElseThrow(() -> new ResourceNotFoundException(notFoundId(1)));
+        Product orderDB = repo.findById(1).orElseThrow(() -> new ResourceNotFoundException(notFoundId(1)));
 
         int id = orderDB.getId();
         String name = orderDB.getName();
 
-        assertEquals("Тестовый молоток", name);
-        assertEquals(5, id);
+        assertEquals("Молоток слесарный 1000г кв. боек деревянная ручка SPARTA", name);
+        assertEquals(1, id);
 
-        Mockito.verify(repo, Mockito.times(1)).findById(5);
+        Mockito.verify(repo, Mockito.times(1)).findById(1);
     }
 
     private String notFoundId(int id) {

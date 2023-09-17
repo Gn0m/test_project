@@ -33,7 +33,7 @@ public class OrderController {
      * @param order заказ который нужно сохранить
      * @return Order
      */
-    @PostMapping(value = "", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "")
     public Order addOrder(@RequestBody OrderDTO order) {
         return service.saveOrder(order);
     }
@@ -45,7 +45,7 @@ public class OrderController {
      * @param id    номер заказа
      * @return <code>Order</code>
      */
-    @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    @PatchMapping(value = "/{id}")
     public Order updateOrder(@RequestBody Order order, @PathVariable("id") int id) {
         return service.updateById(order, id);
     }

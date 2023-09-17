@@ -1,8 +1,10 @@
 package com.example.test_project.controllers;
 
+import com.example.test_project.builder.ClassBuilder;
 import com.example.test_project.dto.OrderDTO;
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Order;
+import com.example.test_project.path.PathURL;
 import com.example.test_project.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
@@ -42,6 +44,8 @@ class OrderControllerTest {
 
     private Order order;
 
+    private OrderDTO orderDTO;
+
     @MockBean
     private OrderService service;
 
@@ -50,59 +54,48 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        order = new Order();
-        order.setId(1);
-        order.setClient(2);
-        order.setDate(LocalDate.now());
-        order.setAddress("Тестовый адресс");
+        order = ClassBuilder.getOrder();
+        orderDTO = ClassBuilder.getOrderDTO(order);
     }
 
     @Test
     void add() throws Exception {
-        MockHttpServletRequestBuilder content = post("/orders")
+        MockHttpServletRequestBuilder content = post(PathURL.BASIC_ORDER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(order));
+                .content(mapper.writeValueAsString(orderDTO));
 
-        OrderDTO dto = new OrderDTO();
-        dto.setClient(2);
-        dto.setDate(order.getDate());
-        dto.setAddress("Тестовый адресс");
-
-
-        Mockito.when(service.saveOrder(dto))
+        Mockito.when(service.saveOrder(Mockito.any(OrderDTO.class)))
                 .thenReturn(order);
 
         this.mockMvc.perform(content)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address",
+                        CoreMatchers.is("г.Ростов-на-Дону, ул. 40 летия Победы 89/13")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.client", CoreMatchers.is(1)))
                 .andDo(MockMvcResultHandlers.print()
                 );
     }
 
     @Test
     void update() throws Exception {
-        order.setId(5);
-        order.setAddress("Тестовый адресс 2");
-        order.setClient(5);
+        LocalDate date = LocalDate.now();
+        order.setDate(date);
+        order.setAddress("г.Ростов-на-Дону, ул. 40 летия Победы 75/4");
 
-        MockHttpServletRequestBuilder content = patch("/orders/1")
+        MockHttpServletRequestBuilder content = patch(PathURL.BASIC_ORDER_URL.concat("/1"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(order));
-        //для того чтобы проверить что id не меняется при апдейте если его передавать
-        Order clone = new Order();
-        clone.setId(1);
-        clone.setAddress(order.getAddress());
-        clone.setDate(order.getDate());
-        clone.setClient(order.getClient());
 
-        Mockito.when(service.updateById(order, 1))
-                .thenReturn(clone);
+        Mockito.when(service.updateById(Mockito.any(Order.class), Mockito.eq(1)))
+                .thenReturn(order);
 
         this.mockMvc.perform(content)
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.date").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(clone.getId())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(order.getId())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.address", CoreMatchers.is(order.getAddress())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.client", CoreMatchers.is(order.getClient())))
                 .andDo(MockMvcResultHandlers.print()
@@ -111,7 +104,7 @@ class OrderControllerTest {
 
     @Test
     void delete() throws Exception {
-        MockHttpServletRequestBuilder content = MockMvcRequestBuilders.delete("/orders/1");
+        MockHttpServletRequestBuilder content = MockMvcRequestBuilders.delete(PathURL.BASIC_ORDER_URL.concat("/1"));
 
         Map<String, Boolean> status = new HashMap<>();
         status.put("Deleted", Boolean.TRUE);
@@ -145,7 +138,7 @@ class OrderControllerTest {
         Mockito.when(service.getAllOrders())
                 .thenReturn(list);
 
-        this.mockMvc.perform(get("/orders/all"))
+        this.mockMvc.perform(get(PathURL.BASIC_ORDER_URL.concat("/all")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id", CoreMatchers.is(order.getId())))
@@ -166,7 +159,7 @@ class OrderControllerTest {
         Mockito.when(service.getById(2))
                 .thenThrow(new ResourceNotFoundException(notFoundId()));
 
-        this.mockMvc.perform(get("/orders/1"))
+        this.mockMvc.perform(get(PathURL.BASIC_ORDER_URL.concat("/1")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(order.getId())))
@@ -174,7 +167,7 @@ class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.date", CoreMatchers.is(order.getDate().toString())))
                 .andDo(MockMvcResultHandlers.print());
 
-        this.mockMvc.perform(get("/orders/2"))
+        this.mockMvc.perform(get(PathURL.BASIC_ORDER_URL.concat("/2")))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode", CoreMatchers.is(404)))

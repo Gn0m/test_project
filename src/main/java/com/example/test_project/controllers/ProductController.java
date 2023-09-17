@@ -33,7 +33,7 @@ public class ProductController {
      * @param product товар для сохранения
      * @return <code>Product</code>
      */
-    @PostMapping(value = "", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "")
     @ApiOperation(value = "Товар", notes = "Сохраняет товар", response = Product.class)
     public Product addProduct(@RequestBody ProductDTO product) {
         return service.saveProduct(product);
@@ -46,7 +46,7 @@ public class ProductController {
      * @param id      номер товара для изменения
      * @return <code>Product</code>
      */
-    @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    @PatchMapping(value = "/{id}")
     public Product updateProduct(@RequestBody Product product, @PathVariable("id") int id) {
         return service.updateProduct(product, id);
     }

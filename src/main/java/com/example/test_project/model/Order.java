@@ -47,7 +47,7 @@ public class Order {
     /**
      * связь с позицией заказа
      */
-    @OneToMany(mappedBy = "order_id", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order_id", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderLine> ordersLine = new HashSet<>();
 
     /**

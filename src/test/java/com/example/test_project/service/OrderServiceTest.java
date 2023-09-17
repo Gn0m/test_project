@@ -13,10 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -32,18 +33,16 @@ class OrderServiceTest {
     void setUp() {
         order = new Order();
         order.setId(1);
-        order.setClient(2);
+        order.setClient(6);
         order.setDate(LocalDate.now());
-        order.setAddress("Тестовый адресс");
+        order.setAddress("г.Ростов-на-Дону,ул. Вятская 45");
     }
 
     @Test
     void getAll() {
         Order clone = new Order();
         clone.setId(2);
-        clone.setAddress(order.getAddress());
-        clone.setDate(order.getDate());
-        clone.setClient(order.getClient());
+        clone.cloneParams(order);
 
         List<Order> list = new ArrayList<>();
         list.add(order);
@@ -76,7 +75,7 @@ class OrderServiceTest {
 
         assertEquals(1, id);
         assertEquals(order.getDate(), date);
-        assertEquals(2, client);
+        assertEquals(6, client);
 
         Mockito.verify(repo, Mockito.times(1)).save(order);
     }
@@ -84,12 +83,10 @@ class OrderServiceTest {
     @Test
     void update() {
         Order clone = new Order();
-        clone.setId(5);
-        clone.setAddress(order.getAddress());
-        clone.setDate(LocalDate.now());
-        clone.setClient(order.getClient());
 
-        order.setDate(clone.getDate());
+        order.setDate(LocalDate.now());
+
+        clone.cloneParams(order);
 
         Mockito.when(repo.save(clone))
                 .thenReturn(order);
@@ -100,8 +97,8 @@ class OrderServiceTest {
         LocalDate date = save.getDate();
         int client = save.getClient();
         assertEquals(1, id);
-        assertEquals(order.getDate(), date);
-        assertEquals(2, client);
+        assertEquals(LocalDate.now(), date);
+        assertEquals(6, client);
 
         Mockito.verify(repo, Mockito.times(1)).save(clone);
     }
@@ -109,12 +106,11 @@ class OrderServiceTest {
     @Test
     void deleteById() {
         repo.save(order);
+
         repo.deleteById(1);
 
-        assertEquals(0,repo.count());
-        assertNotEquals(1,repo.count());
-
         Mockito.verify(repo, Mockito.times(1)).deleteById(1);
+        Mockito.verify(repo, Mockito.times(1)).save(order);
     }
 
     @Test
@@ -124,12 +120,13 @@ class OrderServiceTest {
         Mockito.when(repo.findById(1))
                 .thenReturn(optional);
 
-        Order orderDB = repo.findById(1).orElseThrow(() -> new ResourceNotFoundException(notFoundId(1)));
+        Order orderDB = repo.findById(1).orElseThrow(
+                () -> new ResourceNotFoundException(notFoundId(1)));
 
         int id = orderDB.getId();
         int client = orderDB.getClient();
 
-        assertEquals(2, client);
+        assertEquals(6, client);
         assertEquals(1, id);
 
         Mockito.verify(repo, Mockito.times(1)).findById(1);

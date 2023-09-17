@@ -1,8 +1,10 @@
 package com.example.test_project.controllers;
 
+import com.example.test_project.builder.ClassBuilder;
 import com.example.test_project.dto.ProductDTO;
 import com.example.test_project.exception.ResourceNotFoundException;
 import com.example.test_project.model.Product;
+import com.example.test_project.path.PathURL;
 import com.example.test_project.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
@@ -40,6 +42,7 @@ class ProductControllerTest {
     private MockMvc mockMvc;
 
     private Product product;
+    private ProductDTO productDTO;
 
     @MockBean
     private ProductService service;
@@ -49,55 +52,44 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setId(1);
-        product.setPrice(2.1);
-        product.setName("Тестовый молоток");
+        product = ClassBuilder.getProduct();
+        productDTO = ClassBuilder.getProductDTO();
     }
 
     @Test
     void add() throws Exception {
-        MockHttpServletRequestBuilder content = post("/goods")
+        MockHttpServletRequestBuilder content = post(PathURL.BASIC_GOODS_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(product));
 
-        ProductDTO dto = new ProductDTO();
-        dto.setName("Тестовый молоток");
-        dto.setPrice(2.1);
-
-        Mockito.when(service.saveProduct(dto))
+        Mockito.when(service.saveProduct(productDTO))
                 .thenReturn(product);
 
         this.mockMvc.perform(content)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price", CoreMatchers.is(2.1)))
                 .andDo(MockMvcResultHandlers.print()
                 );
     }
 
     @Test
     void update() throws Exception {
-        product.setId(5);
-        product.setName("Тестовый молоток 2");
+        product.setName("Исправленный молоток");
         product.setPrice(5.4);
 
-        MockHttpServletRequestBuilder content = patch("/goods/1")
+        MockHttpServletRequestBuilder content = patch(PathURL.BASIC_GOODS_URL.concat("/1"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(product));
-        //для того чтобы проверить что id не меняется при апдейте если его передавать
-        Product clone = new Product();
-        clone.setId(1);
-        clone.setPrice(product.getPrice());
-        clone.setName(product.getName());
 
         Mockito.when(service.updateProduct(product, 1))
-                .thenReturn(clone);
+                .thenReturn(product);
 
         this.mockMvc.perform(content)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(clone.getId())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price", CoreMatchers.is(product.getPrice())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(product.getName())))
                 .andDo(MockMvcResultHandlers.print()
@@ -106,7 +98,8 @@ class ProductControllerTest {
 
     @Test
     void delete() throws Exception {
-        MockHttpServletRequestBuilder content = MockMvcRequestBuilders.delete("/goods/1");
+        MockHttpServletRequestBuilder content = MockMvcRequestBuilders
+                .delete(PathURL.BASIC_GOODS_URL.concat("/1"));
 
         Map<String, Boolean> status = new HashMap<>();
         status.put("Deleted", Boolean.TRUE);
@@ -129,7 +122,7 @@ class ProductControllerTest {
     void getAll() throws Exception {
         Product clone = new Product();
         clone.setId(2);
-        clone.setName("Тестовая пила");
+        clone.setName("Самая новая пила");
         clone.setPrice(101.4);
 
 
@@ -140,7 +133,7 @@ class ProductControllerTest {
         Mockito.when(service.getAll())
                 .thenReturn(list);
 
-        this.mockMvc.perform(get("/goods/all"))
+        this.mockMvc.perform(get(PathURL.BASIC_GOODS_URL.concat("/all")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id", CoreMatchers.is(product.getId())))
@@ -161,7 +154,7 @@ class ProductControllerTest {
         Mockito.when(service.getId(2))
                 .thenThrow(new ResourceNotFoundException(notFoundId()));
 
-        this.mockMvc.perform(get("/goods/1"))
+        this.mockMvc.perform(get(PathURL.BASIC_GOODS_URL.concat("/1")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(product.getId())))
@@ -169,7 +162,7 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(product.getName())))
                 .andDo(MockMvcResultHandlers.print());
 
-        this.mockMvc.perform(get("/goods/2"))
+        this.mockMvc.perform(get(PathURL.BASIC_GOODS_URL.concat("/2")))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode", CoreMatchers.is(404)))

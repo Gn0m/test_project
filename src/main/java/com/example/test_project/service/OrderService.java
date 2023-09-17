@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Класс для работы с БД, добавление, удаление, изменение Order
@@ -68,14 +69,15 @@ public class OrderService {
         order.setDate(dto.getDate());
         order.setAddress(dto.getAddress());
 
-        val ordersLine = dto.getOrdersLine();
+        val ordersDtoLine = dto.getOrdersLine();
+        Set<OrderLine> ordersLine = order.getOrdersLine();
 
-        ordersLine.forEach(item -> {
+        ordersDtoLine.forEach(orderLine -> {
             OrderLine line = new OrderLine();
-            line.setCount(item.getCount());
-            line.setGoods_id(item.getGoods_id());
+            line.setCount(orderLine.getCount());
+            line.setGoods_id(orderLine.getGoods_id());
             line.setOrder_id(order);
-            order.getOrdersLine().add(line);
+            ordersLine.add(line);
         });
 
         return repo.save(order);
